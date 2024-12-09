@@ -5,10 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const register_routes_1 = __importDefault(require("./register.routes"));
-// import loginRouter from './login.routes';
-// import profileRouter from './profile.routes';
+const login_routes_1 = __importDefault(require("./login.routes"));
+const profile_routes_1 = __importDefault(require("./profile.routes"));
 const router = (0, express_1.Router)();
 router.use('/api/register', register_routes_1.default);
-// router.use('/api/login', loginRouter);
-// router.use('/api/profile', profileRouter);
+router.use('/api/login', login_routes_1.default);
+router.use('/api/profile', profile_routes_1.default);
 exports.default = router;

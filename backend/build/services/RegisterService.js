@@ -13,6 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const RegisterModel_1 = __importDefault(require("../models/RegisterModel"));
+const bcrypt_1 = require("./../utils/bcrypt");
+const jwt_1 = __importDefault(require("./../utils/jwt"));
 class RegisterService {
     constructor() {
         this.registerModel = new RegisterModel_1.default();
@@ -20,8 +22,10 @@ class RegisterService {
     createRegister(_a) {
         return __awaiter(this, arguments, void 0, function* ({ name, email, password }) {
             try {
-                const register = yield this.registerModel.createRegister({ name, email, password });
-                return { status: 'SUCCESSFUL', data: register };
+                const hashedPassword = yield (0, bcrypt_1.hashPassword)(password);
+                const register = yield this.registerModel.createRegister({ name, email, password: hashedPassword });
+                const newToken = (0, jwt_1.default)(register.dataValues);
+                return { status: 'SUCCESSFUL', data: { token: newToken } };
             }
             catch (error) {
                 return { status: 'ERROR', data: { message: error.message } };

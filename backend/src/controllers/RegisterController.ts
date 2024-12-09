@@ -8,13 +8,13 @@ export default class RegisterController {
     this.registerService = new RegisterService();
   }
 
-  public async createRegister(req: Request, res: Response) {
-    const { username, email, password } = req.body;
+  public async createRegister(req: Request, res: Response): Promise<Response> {
+    const { name, email, password } = req.body;
 
-    const { status, data } = await this.registerService.createRegister({ username, email, password });
+    const { status, data } = await this.registerService.createRegister({name, email, password });
     if (status !== 'SUCCESSFUL') {
-      return res.status(401).json(data);
+      return res.status(200).json(data);
     }
-    return res.status(200).json({ token: 'token gerado!' });
+    return res.status(200).json(data);
   }
 }

@@ -12,20 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const RegisterService_1 = __importDefault(require("../services/RegisterService"));
-class RegisterController {
-    constructor() {
-        this.registerService = new RegisterService_1.default();
-    }
-    createRegister(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const { name, email, password } = req.body;
-            const { status, data } = yield this.registerService.createRegister({ name, email, password });
-            if (status !== 'SUCCESSFUL') {
-                return res.status(200).json(data);
-            }
-            return res.status(200).json(data);
-        });
-    }
-}
-exports.default = RegisterController;
+exports.comparePassword = exports.hashPassword = void 0;
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const hashPassword = (password) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield bcrypt_1.default.hash(password, 10);
+});
+exports.hashPassword = hashPassword;
+const comparePassword = (password, hash) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield bcrypt_1.default.compare(password, hash);
+});
+exports.comparePassword = comparePassword;
+exports.default = { hashPassword: exports.hashPassword, comparePassword: exports.comparePassword };
