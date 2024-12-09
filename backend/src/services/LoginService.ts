@@ -15,12 +15,13 @@ export default class RegisterService {
       const user = await this.registerModel.findRegisterByEmail(email);
 
       if (!user) {
-        return { status: 'ERROR', data: { message: 'Usuário não existe' } };
+        return { status: 'INVALID_DATA', data: { message: 'Email ou senha incorretos' } };
       }
+      
       if (!await comparePassword(password, user.dataValues.password)) {
-        return { status: 'ERROR', data: { message: 'Email ou senha incorretos' } };
+        return { status: 'INVALID_DATA', data: { message: 'Email ou senha incorretos' } };
       }
-      console.log(user.dataValues);
+
       const token = generateToken(user.dataValues);
 
       return { status: 'SUCCESSFUL', data: { token } };

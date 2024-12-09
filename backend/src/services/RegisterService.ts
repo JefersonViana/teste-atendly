@@ -14,7 +14,7 @@ export default class RegisterService {
     try {
       const user = await this.userModel.findRegisterByEmail(email);
       if (user) {
-        return { status: 'ERROR', data: { message: 'User already exists' } };
+        return { status: 'UNAUTHORIZED', data: { message: 'User already exists' } };
       }
       const hashedPassword = await hashPassword(password);
       const register = await this.userModel.createRegister({ name, email, password: hashedPassword });

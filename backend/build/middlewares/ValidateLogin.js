@@ -21,7 +21,7 @@ class ValidateLogin {
         }
         const regex = /\S+@\S+\.\S+/;
         if (!regex.test(fields.email) || fields.password.length < 6) {
-            return res.status(401).json({ message: 'Incorrect username or password' });
+            return res.status(401).json({ message: 'Email ou senha incorretos' });
         }
         return next();
     }
