@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const LoginService_1 = __importDefault(require("../services/LoginService"));
+const mapStatusHTTP_1 = __importDefault(require("../utils/mapStatusHTTP"));
 class LoginController {
     constructor() {
         this.loginService = new LoginService_1.default();
@@ -22,9 +23,9 @@ class LoginController {
             const { email, password } = req.body;
             const { status, data } = yield this.loginService.login({ email, password });
             if (status !== 'SUCCESSFUL') {
-                return res.status(200).json(data);
+                return res.status((0, mapStatusHTTP_1.default)(status)).json(data);
             }
-            return res.status(200).json(data);
+            return res.status((0, mapStatusHTTP_1.default)(status)).json(data);
         });
     }
 }

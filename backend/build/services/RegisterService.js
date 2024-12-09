@@ -23,7 +23,7 @@ class RegisterService {
             try {
                 const user = yield this.userModel.findRegisterByEmail(email);
                 if (user) {
-                    return { status: 'ERROR', data: { message: 'User already exists' } };
+                    return { status: 'UNAUTHORIZED', data: { message: 'User already exists' } };
                 }
                 const hashedPassword = yield (0, bcrypt_1.hashPassword)(password);
                 const register = yield this.userModel.createRegister({ name, email, password: hashedPassword });

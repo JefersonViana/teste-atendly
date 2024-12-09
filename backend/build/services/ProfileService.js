@@ -13,27 +13,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const UserModel_1 = __importDefault(require("../models/UserModel"));
-const bcrypt_1 = require("./../utils/bcrypt");
-const jwt_1 = __importDefault(require("./../utils/jwt"));
+// import generateToken from './../utils/jwt';
 class RegisterService {
     constructor() {
         this.registerModel = new UserModel_1.default();
     }
-    login(_a) {
-        return __awaiter(this, arguments, void 0, function* ({ email, password }) {
+    getUser(payload) {
+        return __awaiter(this, void 0, void 0, function* () {
             try {
-                const user = yield this.registerModel.findRegisterByEmail(email);
-                if (!user) {
-                    return { status: 'INVALID_DATA', data: { message: 'Email ou senha incorretos' } };
-                }
-                console.log(user.dataValues);
-                console.log(user.dataValues.password);
-                if (!(yield (0, bcrypt_1.comparePassword)(password, user.dataValues.password))) {
-                    return { status: 'INVALID_DATA', data: { message: 'Email ou senha incorretos' } };
-                }
-                console.log(user.dataValues);
-                const token = (0, jwt_1.default)(user.dataValues);
-                return { status: 'SUCCESSFUL', data: { token } };
+                const user = yield this.registerModel.findRegisterByEmail(payload.email);
+                return { status: 'SUCCESSFUL', data: user === null || user === void 0 ? void 0 : user.dataValues };
             }
             catch (error) {
                 return { status: 'ERROR', data: { message: error.message } };

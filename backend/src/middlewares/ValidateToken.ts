@@ -10,7 +10,7 @@ class ValidateToken {
     if (!authorization) return res.status(401).json({ message: 'Token not found' });
     try {
       const payload = verify(authorization.replace('Bearer: ', ''), secret);
-      req.query.payload = payload;
+      req.body.payload = payload;
       return next();
     } catch (error) {
       return res.status(401).json({ message: 'Token must be a valid token' });

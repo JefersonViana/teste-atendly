@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import LoginService from '../services/LoginService';
+import mapStatusHTTP from '../utils/mapStatusHTTP';
 
 export default class LoginController {
   private loginService: LoginService;
@@ -13,8 +14,8 @@ export default class LoginController {
 
     const { status, data } = await this.loginService.login({email, password });
     if (status !== 'SUCCESSFUL') {
-      return res.status(200).json(data);
+      return res.status(mapStatusHTTP(status)).json(data);
     }
-    return res.status(200).json(data);
+    return res.status(mapStatusHTTP(status)).json(data);
   }
 }

@@ -12,16 +12,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const RegisterService_1 = __importDefault(require("../services/RegisterService"));
+const ProfileService_1 = __importDefault(require("../services/ProfileService"));
 const mapStatusHTTP_1 = __importDefault(require("../utils/mapStatusHTTP"));
-class RegisterController {
+class ProfileController {
     constructor() {
-        this.registerService = new RegisterService_1.default();
+        this.profileService = new ProfileService_1.default();
     }
-    createRegister(req, res) {
+    getUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { name, email, password } = req.body;
-            const { status, data } = yield this.registerService.createRegister({ name, email, password });
+            const { payload } = req.body;
+            // console.log('PAYLOAD 50', payload);
+            const { status, data } = yield this.profileService.getUser(payload);
             if (status !== 'SUCCESSFUL') {
                 return res.status((0, mapStatusHTTP_1.default)(status)).json(data);
             }
@@ -29,4 +30,4 @@ class RegisterController {
         });
     }
 }
-exports.default = RegisterController;
+exports.default = ProfileController;

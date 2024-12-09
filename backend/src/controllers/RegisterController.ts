@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import RegisterService from '../services/RegisterService';
+import mapStatusHTTP from '../utils/mapStatusHTTP';
 
 export default class RegisterController {
   private registerService: RegisterService;
@@ -13,8 +14,8 @@ export default class RegisterController {
 
     const { status, data } = await this.registerService.createRegister({name, email, password });
     if (status !== 'SUCCESSFUL') {
-      return res.status(200).json(data);
+      return res.status(mapStatusHTTP(status)).json(data);
     }
-    return res.status(200).json(data);
+    return res.status(mapStatusHTTP(status)).json(data);
   }
 }
