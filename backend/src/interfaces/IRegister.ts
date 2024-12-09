@@ -10,3 +10,14 @@ export interface IRegister {
     password: string;
   };
 }
+
+export interface ILogin {
+  id?: number;
+  email: string;
+  password: string;
+  dataValues?: {
+    id: number;
+    email: string;
+    password: string;
+  };
+}
