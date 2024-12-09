@@ -1,42 +1,42 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
+import axiosService from '@/api/axiosService';
 
-const user = ref<{ name: string; email: string } | null>(null);
+interface IUser {
+  name: string;
+  email: string;
+}
+
+const user = ref<IUser | null>(null);
 const errorMessage = ref('');
-
-const isAuthenticated = (): boolean => {
-  const token = localStorage.getItem('auth_token');
-  return token ? true : false;
-};
+const router = useRouter();
+const authStore = useAuthStore();
 
 const fetchUserProfile = async () => {
-  if (!isAuthenticated()) {
+  if (!authStore.isAuthenticated()) {
     errorMessage.value = 'Você precisa estar logado para acessar essa página!';
     return;
   }
 
-  // fetch {}
-  console.log('fetching user profile...');
-  const userStorage = JSON.parse(localStorage.getItem('auth_token') || '{}');
-  console.log('user:', user);
-  user.value = {
-    name: userStorage.password,
-    email: userStorage.email,
-  };
+  const data = await axiosService.profile(authStore.$state.token || '');
+  console.log('user:', data.user);
+  user.value = data.user;
 };
 
-const router = useRouter();
 onMounted(() => {
-  if (!isAuthenticated()) {
-    router.push('/');
+  if (!authStore.isAuthenticated()) {
+    setTimeout(() => {
+      router.push('/');
+    }, 2000);
   } else {
     fetchUserProfile();
   }
 });
 
 const logout = () => {
-  localStorage.removeItem('auth_token');
+  authStore.clearToken();
   router.push('/');
 };
 </script>
