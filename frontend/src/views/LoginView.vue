@@ -1,21 +1,50 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { toast } from 'vue3-toastify';
+import { useAuthStore } from '@/stores/auth';
+import 'vue3-toastify/dist/index.css';
+import validLogin from '@/utils/validLogin';
+import axiosService from '@/api/axiosService';
 
-const email = ref('')
-const password = ref('')
+const email = ref('jefersonv28@gmail.com')
+const password = ref('123456')
 const router = useRouter();
+const authStore = useAuthStore();
 
-const handleSubmit = () => {
-  console.log('Email:', email.value)
-  console.log('Password:', password.value)
-  // criando usuáriol fake
-  const user = {
-    email: email.value,
-    password: password.value
+const handleSubmit = async () => {
+  const validFields = validLogin.validLogin(email.value, password.value)
+
+  if(validFields.type === 'error') {
+    toast.error(validFields.message)
+    return
   }
-  // salvando no localStorage - teste básico
-  localStorage.setItem('auth_token', JSON.stringify(user))
+  const id = toast.loading('Carregando...')
+
+  const response = await axiosService.login(email.value, password.value);
+
+  if(response.type === 'error') {
+    setTimeout(() => {
+      toast.update(id, {
+      render: response.message,
+      type: 'error',
+      isLoading: false,
+      autoClose: 2000,
+    })
+    }, 2000)
+    return
+  }
+  authStore.setToken(response.token);
+  if(response.type === 'success') {
+    setTimeout(() => {
+      toast.update(id, {
+        render: response.message,
+        type: 'success',
+        isLoading: false,
+        autoClose: 2000,
+      })
+    }, 2000)
+  }
   router.push('/profile')
 }
 
