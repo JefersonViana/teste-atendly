@@ -14,23 +14,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const UserModel_1 = __importDefault(require("../models/UserModel"));
 const bcrypt_1 = require("./../utils/bcrypt");
+const jwt_1 = __importDefault(require("./../utils/jwt"));
 class RegisterService {
     constructor() {
-        this.userModel = new UserModel_1.default();
+        this.registerModel = new UserModel_1.default();
     }
-    createRegister(_a) {
-        return __awaiter(this, arguments, void 0, function* ({ name, email, password }) {
+    login(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ email, password }) {
             try {
-                const user = yield this.userModel.findRegisterByEmail(email);
-                if (user) {
-                    return { status: 'ERROR', data: { message: 'User already exists' } };
+                // validar a existencia do usuário
+                const user = yield this.registerModel.findRegisterByEmail(email);
+                console.log(user === null || user === void 0 ? void 0 : user.dataValues);
+                if (!user) {
+                    return { status: 'ERROR', data: { message: 'User not found' } };
                 }
-                const hashedPassword = yield (0, bcrypt_1.hashPassword)(password);
-                const register = yield this.userModel.createRegister({ name, email, password: hashedPassword });
-                if (!register) {
-                    return { status: 'ERROR', data: { message: 'Error para criar usuário!' } };
+                if (!(yield (0, bcrypt_1.comparePassword)(password, user.dataValues.password))) {
+                    return { status: 'ERROR', data: { message: 'Incorrect username or password' } };
                 }
-                return { status: 'SUCCESSFUL', data: { message: "Usuário cadastrado com sucesso!" } };
+                const token = (0, jwt_1.default)(user.dataValues);
+                return { status: 'SUCCESSFUL', data: { token } };
             }
             catch (error) {
                 return { status: 'ERROR', data: { message: error.message } };
