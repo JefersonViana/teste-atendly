@@ -1,17 +1,37 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
+import axiosService from '@/api/axiosService';
+import validateRegister from '@/api/validateRegister';
 
-const name = ref('');
-const email = ref('');
-const password = ref('');
-const confirmPassword = ref('');
+const name = ref<string>('');
+const email = ref<string>('');
+const password = ref<string>('');
+const confirmPassword = ref<string>('');
 
-const handleSubmit = () => {
-  if (password.value !== confirmPassword.value) {
-    alert('As senhas não coincidem!');
+const router = useRouter();
+
+const handleSubmit = async () => {
+  const response = validateRegister.validFields(name.value, email.value, password.value, confirmPassword.value);
+  if (response.type === 'error') {
+    toast.error(response.message);
     return;
   }
-  console.log('Xablau:', { name: name.value, email: email.value, password: password.value, confirmPassword: confirmPassword.value });
+
+  const responseFetch = await axiosService.register(name.value, email.value, password.value);
+  if (responseFetch.type === 'error') {
+    toast.error(responseFetch.message);
+    return;
+  } else {
+    console.log(responseFetch);
+    toast.success(responseFetch.message);
+  }
+
+  setTimeout(() => {
+    router.push('/');
+  }, 2000);
 };
 
 const handleInputs = (e: Event) => {
