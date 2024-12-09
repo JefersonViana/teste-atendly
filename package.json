@@ -2,11 +2,17 @@
   "name": "teste-atendly",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+ "scripts": {
+  "backend": "cd backend && npm install && npm run dev",
+  "frontend": "cd frontend && npm install && npm run dev",
+  "initial": "npm run backend & npm run frontend",
+  "start": "concurrently \"npm run backend\" \"npm run frontend\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
 }
