@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/stores/auth';
 import LoginView from '@/views/LoginView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import RegisterView from '@/views/RegisterView.vue'
@@ -27,9 +28,9 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   const isAutRequired = to.matched.some((record) => record.meta.requiresAuth)
-  const isAuthenticated = localStorage.getItem('auth_token');
+  const authStore = useAuthStore();
 
-  if (isAutRequired && !isAuthenticated) {
+  if (isAutRequired && !authStore.isAuthenticated()) {
     return { name: 'login' }
   }
 });
